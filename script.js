@@ -15,7 +15,11 @@ function divide(dividend, divisor) {
   return dividend / divisor;
 }
 
-function negateValue(value) {
+function exponentiate(base, exponent) {
+  return base ** exponent;
+}
+// could add a root function
+function negate(value) {
   return value * -1;
 }
 
@@ -33,8 +37,11 @@ function operate(operator, firstOperand, secondOperand) {
     case "/":
       return divide(firstOperand, secondOperand);
       break;
+    case "**":
+      return exponentiate(firstOperand, secondOperand);
+      break;
     case "+/-":
-      return negateValue(firstOperand);
+      return negate(firstOperand);
       break;
   }
 }
