@@ -1,3 +1,6 @@
+// are commits working porperly?
+
+
 const CALCULATOR = document.querySelector(".calculator");
 const CALC_DISPLAY = CALCULATOR.querySelector(".display");
 const CALC_BUTTONS = CALCULATOR.querySelector(".btns");
