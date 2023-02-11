@@ -9,7 +9,6 @@ const Operators = {
   divide: (dividend, divisor) => dividend / divisor,
   exponentiate: (base, exponent) => base ** exponent,
   negate: (value) => value * -1,
-  // could add a root operator?
 };
 
 function operate(operator, firstOperand, secondOperand) {
@@ -40,12 +39,6 @@ function operate(operator, firstOperand, secondOperand) {
 function updateDisplayHistory(current, operator) {
   const calcHistory = CALC_DISPLAY.querySelector(".history");
 }
-
-// function updateDisplayCurrent(digit) {
-//   const currentNumber = CALC_DISPLAY.querySelector(".current");
-//   if (currentNumber.textContent === "0") currentNumber.textContent = `${digit}`;
-//   else currentNumber.textContent += `${digit}`;
-// }
 
 const Display = {
   updateDisplayHistory: updateDisplayHistory,
