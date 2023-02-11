@@ -55,6 +55,21 @@ const Display = {
     if (!currentNumber.textContent) currentNumber.textContent = `0.`;
     else currentNumber.textContent += `.`;
   },
+  updateDelete: () => {
+    const currentNumber = CALC_DISPLAY.querySelector(".current");
+    if (currentNumber.textContent.length === 1) currentNumber.textContent = `0`;
+    else currentNumber.textContent = currentNumber.textContent.slice(0, -1);
+  },
+};
+
+const DeleteButton = {
+  deleteBtn: CALC_BUTTONS.querySelector("#delete"),
+  Display: Display,
+  activateDeleteListener: () => {
+    DeleteButton.deleteBtn.addEventListener("mousedown", () =>
+      Display.updateDelete()
+    );
+  },
 };
 
 const DecimalButton = {
@@ -84,7 +99,7 @@ const NumberButtons = {
 
 NumberButtons.activateNumberListeners();
 DecimalButton.activateDecimalListener();
-
+DeleteButton.activateDeleteListener();
 const Calculator = {
   Operators: Operators,
   operate: operate,
