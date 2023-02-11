@@ -1,6 +1,3 @@
-// are commits working porperly?
-
-
 const CALCULATOR = document.querySelector(".calculator");
 const CALC_DISPLAY = CALCULATOR.querySelector(".display");
 const CALC_BUTTONS = CALCULATOR.querySelector(".btns");
@@ -39,18 +36,34 @@ function operate(operator, firstOperand, secondOperand) {
   }
 }
 
-function updateDisplayHistory(current, operator) {
+function updateHistory(current, operator) {
   const calcHistory = CALC_DISPLAY.querySelector(".history");
 }
 
 const Display = {
-  updateDisplayHistory: updateDisplayHistory,
-  updateDisplayCurrent: (digit) => {
+  // add if statement whether it has reached maximum display size
+  updateHistory: updateHistory,
+  updateCurrentDigits: (digit) => {
     const currentNumber = CALC_DISPLAY.querySelector(".current");
     if (currentNumber.textContent === "0")
       currentNumber.textContent = `${digit}`;
-    else if (typeof Number(currentNumber.textContent) === "number")
-      currentNumber.textContent += `${digit}`;
+    else currentNumber.textContent += `${digit}`;
+  },
+  updateDecimal: () => {
+    const currentNumber = CALC_DISPLAY.querySelector(".current");
+    if (currentNumber.textContent.includes(".")) return;
+    if (!currentNumber.textContent) currentNumber.textContent = `0.`;
+    else currentNumber.textContent += `.`;
+  },
+};
+
+const DecimalButton = {
+  decimalBtn: CALC_BUTTONS.querySelector(".decimal"),
+  Display: Display,
+  activateDecimalListener: () => {
+    DecimalButton.decimalBtn.addEventListener("mousedown", () =>
+      Display.updateDecimal()
+    );
   },
 };
 
@@ -62,15 +75,15 @@ const NumberButtons = {
   Display: Display,
   activateNumberListeners: () => {
     NumberButtons.numberBtns.forEach((btn) => {
-      btn.addEventListener("mousedown", (event) => {
-        // add if statement whether it has reached maximum display size
-        Display.updateDisplayCurrent(event.target.id);
-      });
+      btn.addEventListener("mousedown", (event) =>
+        Display.updateCurrentDigits(event.target.id)
+      );
     });
   },
 };
 
 NumberButtons.activateNumberListeners();
+DecimalButton.activateDecimalListener();
 
 const Calculator = {
   Operators: Operators,
