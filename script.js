@@ -1,47 +1,37 @@
-// Operators
-function add(augend, addend) {
-  return augend + addend;
-}
-
-function subtract(minuend, subtrahend) {
-  return minuend - subtrahend;
-}
-
-function multiply(multiplicand, multiplier) {
-  return multiplicand * multiplier;
-}
-
-function divide(dividend, divisor) {
-  return dividend / divisor;
-}
-
-function exponentiate(base, exponent) {
-  return base ** exponent;
-}
-// could add a root function
-function negate(value) {
-  return value * -1;
-}
+const Operators = {
+  add: (augend, addend) => augend + addend,
+  subtract: (minuend, subtrahend) => minuend - subtrahend,
+  multiply: (multiplicand, multiplier) => multiplicand * multiplier,
+  divide: (dividend, divisor) => dividend / divisor,
+  exponentiate: (base, exponent) => base ** exponent,
+  negate: (value) => value * -1,
+  // could add a root operator?
+};
 
 function operate(operator, firstOperand, secondOperand) {
   switch (operator) {
     case "+":
-      return add(firstOperand, secondOperand);
+      return Operators.add(firstOperand, secondOperand);
       break;
     case "-":
-      return subtract(firstOperand, secondOperand);
+      return Operators.subtract(firstOperand, secondOperand);
       break;
     case "*":
-      return multiply(firstOperand, secondOperand);
+      return Operators.multiply(firstOperand, secondOperand);
       break;
     case "/":
-      return divide(firstOperand, secondOperand);
+      return Operators.divide(firstOperand, secondOperand);
       break;
     case "**":
-      return exponentiate(firstOperand, secondOperand);
+      return Operators.exponentiate(firstOperand, secondOperand);
       break;
     case "+/-":
-      return negate(firstOperand);
+      return Operators.negate(firstOperand);
       break;
   }
 }
+
+const Calculator = {
+  Operators: Operators,
+  operate: operate,
+};
