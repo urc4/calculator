@@ -116,6 +116,45 @@ const NumberButtons = {
   },
 };
 
+function convertToNumber(currentString) {
+  // const currentString = currentValue.textContent;
+  // Number("") retruns 0
+  if (!currentString.includes(".")) return Number(currentString);
+  const splitDecimal = currentString.split(".");
+  const integerPart = splitDecimal[0];
+  const decimalPart = splitDecimal[1];
+  if (!decimalPart.length) return Number(integerPart);
+  return Number(integerPart + decimalPart) / 10 ** decimalPart.length;
+}
+
+const AddButton = {
+  addBtn: CALC_BUTTONS.querySelector("#add"),
+  Display: Display,
+  activateAddListener: () => {
+    AddButton.addBtn.addEventListener("mousedown", () => {
+      const currentNumber = CALC_DISPLAY.querySelector(".current");
+      const calcHistory = CALC_DISPLAY.querySelector(".history");
+      const currentString = currentNumber.textContent;
+      Calculator.currentValue = convertToNumber(currentString);
+      if (!Calculator.storedValue) {
+        Calculator.storedValue = Calculator.currentValue;
+        Calculator.currentValue = null;
+        Calculator.operator = "+";
+        calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator}`;
+      }
+
+      Calculator.storedValue = Calculator.operate(
+        Calculator.operator,
+        Calculator.currentValue,
+        Calculator.storedValue
+      );
+      Calculator.currentValue = null;
+      calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator}`;
+      currentNumber.textContent = "";
+    });
+  },
+};
+
 const Calculator = {
   Operators: Operators,
   operate: operate,
@@ -124,10 +163,12 @@ const Calculator = {
     DecimalButton.activateDecimalListener();
     DeleteButton.activateDeleteListener();
     ClearButton.activateClearListener();
+    AddButton.activateAddListener();
   },
   updateDisplay: null,
   currentValue: null,
   storedValue: null,
+  operator: null,
 };
 
 Calculator.activateListeners();
