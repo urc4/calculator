@@ -60,6 +60,25 @@ const Display = {
     if (currentNumber.textContent.length === 1) currentNumber.textContent = `0`;
     else currentNumber.textContent = currentNumber.textContent.slice(0, -1);
   },
+  updateClear: () => {
+    const currentNumber = CALC_DISPLAY.querySelector(".current");
+    const calcHistory = CALC_DISPLAY.querySelector(".history");
+
+    calcHistory.textContent = `h`;
+    currentNumber.textContent = `0`;
+    Calculator.currentValue = null;
+    Calculator.storedValue = null;
+  },
+};
+
+const ClearButton = {
+  clearBtn: CALC_BUTTONS.querySelector("#clear"),
+  Display: Display,
+  activateClearListener: () => {
+    ClearButton.clearBtn.addEventListener("mousedown", () =>
+      Display.updateClear()
+    );
+  },
 };
 
 const DeleteButton = {
@@ -97,12 +116,18 @@ const NumberButtons = {
   },
 };
 
-NumberButtons.activateNumberListeners();
-DecimalButton.activateDecimalListener();
-DeleteButton.activateDeleteListener();
 const Calculator = {
   Operators: Operators,
   operate: operate,
+  activateListeners: () => {
+    NumberButtons.activateNumberListeners();
+    DecimalButton.activateDecimalListener();
+    DeleteButton.activateDeleteListener();
+    ClearButton.activateClearListener();
+  },
   updateDisplay: null,
   currentValue: null,
+  storedValue: null,
 };
+
+Calculator.activateListeners();
