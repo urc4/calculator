@@ -31,6 +31,11 @@ const Display = {
   // add if statement whether it has reached maximum display size
   updateCurrentDigits: (digit) => {
     const currentNumber = CALC_DISPLAY.querySelector(".current");
+    if (Calculator.isOperating) {
+      currentNumber.textContent = `${digit}`;
+      Calculator.isOperating = false;
+      return;
+    }
     if (currentNumber.textContent === "0")
       currentNumber.textContent = `${digit}`;
     else currentNumber.textContent += `${digit}`;
@@ -148,7 +153,8 @@ function updateOperator(btnId) {
     Calculator.operator = getOperator(btnId);
     Calculator.currentValue = null;
     calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator}`;
-    currentNumber.textContent = "";
+    currentNumber.textContent = `${Calculator.storedValue}`;
+    Calculator.isOperating = true;
     return;
   }
 
@@ -160,7 +166,8 @@ function updateOperator(btnId) {
     Calculator.storedValue
   );
   Calculator.currentValue = null;
-  currentNumber.textContent = "";
+  currentNumber.textContent = `${Calculator.storedValue}`;
+  Calculator.isOperating = true;
   Calculator.operator = getOperator(btnId);
   calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator}`;
   // Calculator.operator = null;
@@ -186,6 +193,7 @@ const Calculator = {
   currentValue: null,
   storedValue: null,
   operator: null,
+  isOperating: false,
 };
 
 Calculator.activateListeners();
