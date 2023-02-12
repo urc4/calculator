@@ -85,7 +85,7 @@ function createNumberListener() {
 }
 
 function convertToNumber(currentString) {
-  // Number("") retruns 0
+  if (!currentString) return null;
   if (!currentString.includes(".")) return Number(currentString);
   const splitDecimal = currentString.split(".");
   const integerPart = splitDecimal[0];
@@ -154,15 +154,15 @@ function updateOperator(btnId) {
 
   if (Calculator.currentValue === null) return;
 
-  Calculator.operator = getOperator(btnId);
   Calculator.storedValue = operate(
     Calculator.operator,
     Calculator.currentValue,
     Calculator.storedValue
   );
   Calculator.currentValue = null;
-  calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator}`;
   currentNumber.textContent = "";
+  Calculator.operator = getOperator(btnId);
+  calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator}`;
   // Calculator.operator = null;
 }
 
