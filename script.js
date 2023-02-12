@@ -5,19 +5,19 @@ const CALC_BUTTONS = CALCULATOR.querySelector(".btns");
 function operate(operator, firstOperand, secondOperand) {
   switch (operator) {
     case "+":
-      return firstOperand + secondOperand;
+      return secondOperand + firstOperand;
       break;
     case "-":
-      return firstOperand - secondOperand;
+      return secondOperand - firstOperand;
       break;
     case "*":
-      return firstOperand * secondOperand;
+      return secondOperand * firstOperand;
       break;
     case "/":
-      return firstOperand / secondOperand;
+      return secondOperand / firstOperand;
       break;
     case "**":
-      return firstOperand ** secondOperand;
+      return secondOperand ** firstOperand;
       break;
     case "+/-":
       return firstOperand * -1;
@@ -53,6 +53,7 @@ const Display = {
     currentNumber.textContent = `0`;
     Calculator.currentValue = null;
     Calculator.storedValue = null;
+    Calculator.operator = null;
   },
 };
 
@@ -93,83 +94,67 @@ function convertToNumber(currentString) {
   return Number(integerPart + decimalPart) / 10 ** decimalPart.length;
 }
 
-const AddButton = {
-  addBtn: CALC_BUTTONS.querySelector("#add"),
-  Display: Display,
-  activateAddListener: () => {
-    AddButton.addBtn.addEventListener("mousedown", () => {
-      const currentNumber = CALC_DISPLAY.querySelector(".current");
-      const calcHistory = CALC_DISPLAY.querySelector(".history");
-      const currentString = currentNumber.textContent;
-      Calculator.currentValue = convertToNumber(currentString);
-      if (!Calculator.storedValue) {
-        Calculator.storedValue = Calculator.currentValue;
-        Calculator.currentValue = null;
-        Calculator.operator = "+";
-        calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator}`;
-      }
-
-      Calculator.storedValue = operate(
-        Calculator.operator,
-        Calculator.currentValue,
-        Calculator.storedValue
-      );
-      Calculator.currentValue = null;
-      calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator}`;
-      currentNumber.textContent = "";
-    });
-  },
-};
-
 // coul make all of this object operators a function with an object containing each
 // of the information that changes each time around so I can to query selector all
 
+function getOperator(btnId) {
+  switch (btnId) {
+    case "add":
+      return "+";
+      break;
+    case "subtract":
+      return "-";
+      break;
+    case "multiply":
+      return "*";
+      break;
+    case "divide":
+      return "/";
+      break;
+    case "exponentiate":
+      return "**";
+      break;
+    case "negate":
+      return "+/-";
+      break;
+    case "operate":
+      return "=";
+      break;
+  }
+}
+
+// as of now it is performing the clicked event
 function updateOperator(btnId) {
   const calcHistory = CALC_DISPLAY.querySelector(".history");
   const currentNumber = CALC_DISPLAY.querySelector(".current");
-  const currentString = currentNumber.textContent;
-  Calculator.currentValue = convertToNumber(currentString);
+  // const currentString = currentNumber.textContent;
+  Calculator.currentValue = convertToNumber(currentNumber.textContent);
 
-  switch (btnId) {
-    case "add":
-      Calculator.operator = "+";
-      break;
-    case "subtract":
-      Calculator.operator = "-";
-      break;
-    case "multiply":
-      Calculator.operator = "*";
-      break;
-    case "divide":
-      Calculator.operator = "/";
-      break;
-    case "exponentiate":
-      Calculator.operator = "**";
-      break;
-    case "negate":
-      Calculator.operator = "+/-";
-      break;
-    case "operate":
-      Operation.operator = "=";
-      break;
-  }
+  if (Calculator.operator === null) Calculator.operator = getOperator(btnId);
 
-  if (Calculator.operator === "+/-") {
-    Calculator.currentValue = `${Calculator.operate(
-      Calculator.operator,
-      Calculator.currentValue
-    )}`;
-    return;
-  }
+  // if (Calculator.operator === "+/-" && Calculator.currentValue !== null) {
+  //   Calculator.currentValue = `${operate(
+  //     Calculator.operator,
+  //     Calculator.currentValue
+  //   )}`;
+  //   calcHistory.textContent = `negate(${currentNumber.textContent})`;
+  //   currentNumber.textContent = `${Calculator.currentValue}`;
+  //   Calculator.operator = null;
+  //   return;
+  // }
 
-  if (!Calculator.storedValue) {
+  if (Calculator.storedValue === null) {
     Calculator.storedValue = Calculator.currentValue;
+    Calculator.operator = getOperator(btnId);
     Calculator.currentValue = null;
     calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator}`;
-    Calculator.operator = null;
+    currentNumber.textContent = "";
     return;
   }
 
+  if (Calculator.currentValue === null) return;
+
+  Calculator.operator = getOperator(btnId);
   Calculator.storedValue = operate(
     Calculator.operator,
     Calculator.currentValue,
@@ -178,11 +163,11 @@ function updateOperator(btnId) {
   Calculator.currentValue = null;
   calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator}`;
   currentNumber.textContent = "";
-  Calculator.operator = null;
+  // Calculator.operator = null;
 }
 
 function createOperatorListener() {
-  const operatorBtn = CALC_BUTTONS.querySelectorAll(".operator");
+  const operatorBtn = CALC_BUTTONS.querySelectorAll(".operation");
   operatorBtn.forEach((btn) => {
     btn.addEventListener("mousedown", (event) => {
       updateOperator(event.target.id);
@@ -191,14 +176,12 @@ function createOperatorListener() {
 }
 
 const Calculator = {
-  // Operators: Operators,
-  // operate: operate,
   activateListeners: () => {
     createNumberListener();
     createDecimalListener();
     createDeleteListener();
     createClearListener();
-    AddButton.activateAddListener();
+    createOperatorListener();
   },
   currentValue: null,
   storedValue: null,
@@ -206,59 +189,3 @@ const Calculator = {
 };
 
 Calculator.activateListeners();
-
-// const Operators = {
-//   add: (augend, addend) => augend + addend,
-//   subtract: (minuend, subtrahend) => minuend - subtrahend,
-//   multiply: (multiplicand, multiplier) => multiplicand * multiplier,
-//   divide: (dividend, divisor) => dividend / divisor,
-//   exponentiate: (base, exponent) => base ** exponent,
-//   negate: (value) => value * -1,
-// };
-
-// const ClearButton = {
-//   clearBtn: CALC_BUTTONS.querySelector("#clear"),
-//   Display: Display,
-//   activateClearListener: () => {
-//     ClearButton.clearBtn.addEventListener("mousedown", () =>
-//       Display.updateClear()
-//     );
-//   },
-// };
-
-// const OperatorButton = {
-//   Display: Display,
-//   activateOperatorListener: () => {
-//     const operatorBtn = CALC_BUTTONS.querySelectorAll(".operator");
-//     operatorBtn.forEach(btn => {
-//       btn.addEventListener("mousedown",(event)=>{
-//         updateOperator(event.target.id)
-//       })
-//     })
-//   },
-// };
-
-// const DecimalButton = {
-//   decimalBtn: CALC_BUTTONS.querySelector(".decimal"),
-//   Display: Display,
-//   activateDecimalListener: () => {
-//     DecimalButton.decimalBtn.addEventListener("mousedown", () =>
-//       Display.updateDecimal()
-//     );
-//   },
-// };
-
-// const DeleteButton = {
-//   deleteBtn: CALC_BUTTONS.querySelector("#delete"),
-//   Display: Display,
-//   activateDeleteListener: () => {
-//     DeleteButton.deleteBtn.addEventListener("mousedown", () =>
-//       Display.updateDelete()
-//     );
-//   },
-// };
-
-// NumberButtons.activateNumberListeners();
-// DecimalButton.activateDecimalListener();
-// DeleteButton.activateDeleteListener();
-// ClearButton.activateClearListener();
