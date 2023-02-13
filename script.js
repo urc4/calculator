@@ -173,6 +173,7 @@ function updateOperate() {
   const currentNumber = CALC_DISPLAY.querySelector(".current");
   Calculator.currentValue = convertToNumber(currentNumber.textContent);
   console.log("hi");
+  if (Calculator.operator === null) return;
   if (Calculator.isOperating && Calculator.currentValue === null) return;
   if (Calculator.storedValue === null) return;
 
@@ -190,6 +191,7 @@ function updateOperate() {
   Calculator.currentValue = null;
   // Calculator.operator = getOperator(btnId)[0];
   Calculator.isOperating = true;
+  Calculator.operator = null;
   return;
 }
 
