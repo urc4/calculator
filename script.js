@@ -2,6 +2,10 @@ const CALCULATOR = document.querySelector(".calculator");
 const CALC_DISPLAY = CALCULATOR.querySelector(".display");
 const CALC_BUTTONS = CALCULATOR.querySelector(".btns");
 
+const FOOTER = document.querySelector("footer");
+const yearDisplay = FOOTER.querySelector("#year");
+yearDisplay.textContent = new Date().getFullYear();
+
 function operate(operator, firstOperand, secondOperand) {
   switch (operator) {
     case "+":
