@@ -64,6 +64,27 @@ const Display = {
     Calculator.storedValue = null;
     Calculator.operator = null;
   },
+  isUnderMaxLength: () => {
+    const currentNumberText =
+      CALC_DISPLAY.querySelector(".current").textContent;
+    if (currentNumberText.length > 12) return false;
+    if (currentNumberText.length < 12) return true;
+    if (currentNumberText.includes(".")) return true;
+    return false;
+  },
+  roundNumber: () => {
+    if (Display.isUnderMaxLength()) return;
+    const currentNumber = CALC_DISPLAY.querySelector(".current");
+    const currentValue = convertToNumber(currentNumber.textContent);
+    if (!currentNumber.textContent.includes(".")) {
+      const exponent = currentNumber.textContent.length - 1;
+      currentNumber.textContent =
+        `${Math.round(currentValue / 10 ** 4)}`.slice(0, 8) + `e+${exponent}`;
+    }
+    currentNumber.textContent = `${Math.round(
+      convertToNumber(currentNumber.textContent)
+    )}`;
+  },
 };
 
 function createClearListener() {
@@ -109,28 +130,30 @@ function convertToNumber(currentString) {
 function getOperator(btnId) {
   switch (btnId) {
     case "add":
-      return "+";
+      return ["+", "+"];
       break;
     case "subtract":
-      return "-";
+      return ["-", "-"];
       break;
     case "multiply":
-      return "*";
+      return ["*", "x"];
       break;
     case "divide":
-      return "/";
+      return ["/", "\u00F7"];
       break;
     case "exponentiate":
-      return "**";
+      return ["**", "exp"];
       break;
     case "negate":
-      return "+/-";
+      return ["+/-", "\u00B1"];
       break;
     case "operate":
-      return "=";
+      return ["=", "="];
       break;
   }
 }
+
+//it is not changing operator instead it executes then it changes
 
 // as of now it is performing the clicked event
 function updateOperator(btnId) {
@@ -139,7 +162,7 @@ function updateOperator(btnId) {
   // const currentString = currentNumber.textContent;
   Calculator.currentValue = convertToNumber(currentNumber.textContent);
 
-  if (Calculator.operator === null) Calculator.operator = getOperator(btnId);
+  if (Calculator.operator === null) Calculator.operator = getOperator(btnId)[0];
 
   // if (Calculator.operator === "+/-" && Calculator.currentValue !== null) {
   //   Calculator.currentValue = `${operate(
@@ -154,15 +177,22 @@ function updateOperator(btnId) {
 
   if (Calculator.storedValue === null) {
     Calculator.storedValue = Calculator.currentValue;
-    Calculator.operator = getOperator(btnId);
+    Calculator.operator = getOperator(btnId)[0];
+    const operatorText = getOperator(btnId)[1];
     Calculator.currentValue = null;
-    calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator}`;
+    calcHistory.textContent = `${Calculator.storedValue} ${operatorText}`;
     currentNumber.textContent = `${Calculator.storedValue}`;
     Calculator.isOperating = true;
     return;
   }
 
   if (Calculator.currentValue === null) return;
+  if (Calculator.isOperating) {
+    Calculator.operator = getOperator(btnId)[0];
+    const operatorText = getOperator(btnId)[1];
+    calcHistory.textContent = `${Calculator.storedValue} ${operatorText}`;
+    return;
+  }
 
   Calculator.storedValue = operate(
     Calculator.operator,
@@ -172,8 +202,9 @@ function updateOperator(btnId) {
   Calculator.currentValue = null;
   currentNumber.textContent = `${Calculator.storedValue}`;
   Calculator.isOperating = true;
-  Calculator.operator = getOperator(btnId);
-  calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator}`;
+  Calculator.operator = getOperator(btnId)[0];
+  const operatorText = getOperator(btnId)[1];
+  calcHistory.textContent = `${Calculator.storedValue} ${operatorText}`;
   // Calculator.operator = null;
 }
 

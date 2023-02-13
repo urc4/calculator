@@ -63,7 +63,7 @@ main {
   flex-direction: column;
   justify-content: space-between;
   align-items: end;
-  /* gap: 20px; */
+  border-radius: 5px;
 }
 
 .display .history {
@@ -116,6 +116,10 @@ button {
 .btns .number,
 .btns .decimal {
   background-color: var(--btn-background);
+}
+
+.btns .decimal {
+  font-size: 2rem;
 }
 
 .btns .eraser {
