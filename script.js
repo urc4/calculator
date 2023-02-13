@@ -67,6 +67,7 @@ const Display = {
   isUnderMaxLength: () => {
     const currentNumberText =
       CALC_DISPLAY.querySelector(".current").textContent;
+    // . e+26 tem ate 13 caracteres
     if (currentNumberText.length > 12) return false;
     if (currentNumberText.length < 12) return true;
     if (currentNumberText.includes(".")) return true;
