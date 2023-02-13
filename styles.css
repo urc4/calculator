@@ -58,7 +58,25 @@ button {
 .display {
     color: var(--display-color);
     background-color: var(--display-background);
-    margin: 50px;
+    margin: 30px 50px;
+    margin-top: 50px;
+    width: 400px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: end;
+    /* gap: 20px; */
+}
+
+.display .history {
+    font-size: 20px;
+    padding-right: 10px;
+}
+
+.display .current {
+    font-size: 40px;
+    padding-right: 10px;
 }
 
 .btn {
