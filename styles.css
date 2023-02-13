@@ -131,6 +131,14 @@ button {
   box-shadow: 0px 1px 3px #888888;
 }
 
+.btns .eraser:hover {
+  background-color: #df8956;
+}
+
+.btns .eraser:active {
+  background-color: #af7356;
+}
+
 a {
   text-decoration: none;
   color: inherit;
