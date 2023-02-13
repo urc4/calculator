@@ -20,7 +20,7 @@ function operate(operator, firstOperand, secondOperand) {
     case "/":
       return secondOperand / firstOperand;
       break;
-    case "**":
+    case "exp":
       return secondOperand ** firstOperand;
       break;
     case "+/-":
@@ -32,7 +32,6 @@ function operate(operator, firstOperand, secondOperand) {
 }
 
 const Display = {
-  // add if statement whether it has reached maximum display size
   updateCurrentDigits: (digit) => {
     const currentNumber = CALC_DISPLAY.querySelector(".current");
     if (Calculator.isOperating) {
@@ -51,6 +50,7 @@ const Display = {
     else currentNumber.textContent += `.`;
   },
   updateDelete: () => {
+    if (Calculator.isOperating) return;
     const currentNumber = CALC_DISPLAY.querySelector(".current");
     if (currentNumber.textContent.length === 1) currentNumber.textContent = `0`;
     else currentNumber.textContent = currentNumber.textContent.slice(0, -1);
@@ -125,16 +125,13 @@ function convertToNumber(currentString) {
   return Number(integerPart + decimalPart) / 10 ** decimalPart.length;
 }
 
-// coul make all of this object operators a function with an object containing each
-// of the information that changes each time around so I can to query selector all
-
 function getOperator(btnId) {
   switch (btnId) {
     case "add":
       return ["+", "+"];
       break;
     case "subtract":
-      return ["-", "-"];
+      return ["-", "\u{2212}"];
       break;
     case "multiply":
       return ["*", "x"];
@@ -143,38 +140,72 @@ function getOperator(btnId) {
       return ["/", "\u00F7"];
       break;
     case "exponentiate":
-      return ["**", "exp"];
-      break;
-    case "negate":
-      return ["+/-", "\u00B1"];
-      break;
-    case "operate":
-      return ["=", "="];
+      return ["exp", "exp"];
       break;
   }
 }
 
-//it is not changing operator instead it executes then it changes
+//on the first run its multiplying by 2 for some reason
+function updateNegate() {
+  const calcHistory = CALC_DISPLAY.querySelector(".history");
+  const currentNumber = CALC_DISPLAY.querySelector(".current");
+  Calculator.currentValue = convertToNumber(currentNumber.textContent);
+  Calculator.storedValue = operate("+/-", Calculator.currentValue);
+  currentNumber.textContent = `${Calculator.storedValue}`;
+  calcHistory.textContent = `negate(${Calculator.currentValue})`;
+  Calculator.currentValue = null;
+  Calculator.isOperating = true;
+  // Calculator.operator = getOperator(btnId)[0];
+  return;
+}
 
-// as of now it is performing the clicked event
+function createNegateListener() {
+  const negateBtn = CALC_BUTTONS.querySelector("#negate");
+  negateBtn.addEventListener("mousedown", () => {
+    updateNegate();
+  });
+}
+
+// it also doubles the value when pressed another operation afterwards
+// this may have to do with the fact that it operates twice
+function updateOperate() {
+  const calcHistory = CALC_DISPLAY.querySelector(".history");
+  const currentNumber = CALC_DISPLAY.querySelector(".current");
+  Calculator.currentValue = convertToNumber(currentNumber.textContent);
+  console.log("hi");
+  if (Calculator.isOperating && Calculator.currentValue === null) return;
+  if (Calculator.storedValue === null) return;
+
+  // Calculator.storedValue = operate("=", Calculator.currentValue, Calculator.storedValue);
+  // Calculator.isOperating = true;
+  calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator} ${
+    Calculator.currentValue
+  } = 
+  ${(Calculator.storedValue = operate(
+    Calculator.operator,
+    Calculator.currentValue,
+    Calculator.storedValue
+  ))}`;
+  currentNumber.textContent = `${Calculator.storedValue}`;
+  Calculator.currentValue = null;
+  // Calculator.operator = getOperator(btnId)[0];
+  Calculator.isOperating = true;
+  return;
+}
+
+function createOperateListener() {
+  const operateBtn = CALC_BUTTONS.querySelector("#operate");
+  operateBtn.addEventListener("mousedown", () => {
+    updateOperate();
+  });
+}
+
 function updateOperator(btnId) {
   const calcHistory = CALC_DISPLAY.querySelector(".history");
   const currentNumber = CALC_DISPLAY.querySelector(".current");
-  // const currentString = currentNumber.textContent;
   Calculator.currentValue = convertToNumber(currentNumber.textContent);
 
   if (Calculator.operator === null) Calculator.operator = getOperator(btnId)[0];
-
-  // if (Calculator.operator === "+/-" && Calculator.currentValue !== null) {
-  //   Calculator.currentValue = `${operate(
-  //     Calculator.operator,
-  //     Calculator.currentValue
-  //   )}`;
-  //   calcHistory.textContent = `negate(${currentNumber.textContent})`;
-  //   currentNumber.textContent = `${Calculator.currentValue}`;
-  //   Calculator.operator = null;
-  //   return;
-  // }
 
   if (Calculator.storedValue === null) {
     Calculator.storedValue = Calculator.currentValue;
@@ -188,6 +219,7 @@ function updateOperator(btnId) {
   }
 
   if (Calculator.currentValue === null) return;
+
   if (Calculator.isOperating) {
     Calculator.operator = getOperator(btnId)[0];
     const operatorText = getOperator(btnId)[1];
@@ -206,7 +238,6 @@ function updateOperator(btnId) {
   Calculator.operator = getOperator(btnId)[0];
   const operatorText = getOperator(btnId)[1];
   calcHistory.textContent = `${Calculator.storedValue} ${operatorText}`;
-  // Calculator.operator = null;
 }
 
 function createOperatorListener() {
@@ -225,6 +256,8 @@ const Calculator = {
     createDeleteListener();
     createClearListener();
     createOperatorListener();
+    createNegateListener();
+    createOperateListener();
   },
   currentValue: null,
   storedValue: null,
