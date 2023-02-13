@@ -1,6 +1,13 @@
 :root {
-    --primary:#f2f2f2;
-    --secondary: #000
+    /* could do a dark theme */
+    --primary-background:#f2f2f2;
+    --secondary-background: #425A7D;
+    --btn-color:#E5FAFC;
+    --btn-background:#A0C0D6;
+    --eraser-background:#DF7356;
+    --display-color:#2A3240;
+    --display-background:#E5FAFC;
+    
 }
 
 *, 
@@ -17,9 +24,14 @@ html {
 }
 
 body {
-    background-color: var(--primary);
-    color: var(--secondary);
+    background-color: #f2f2f2;
+    color: black;
     font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 button {
@@ -29,6 +41,25 @@ button {
     font-size: inherit;
     color: inherit;
     cursor: pointer;
+}
+
+.calc-container {
+    /* flex: 1; */
+
+}
+
+.calculator {
+    display: flex;
+    flex-direction: column;
+    /* height: 500px; */
+    width: 300px;
+    background-color: var(--secondary-background);
+}
+
+.display {
+    color: var(--display-color);
+    background-color: var(--display-background);
+    margin: 5px;
 }
 
 .btn {
@@ -43,4 +74,18 @@ button {
 
 .btn:active {
     background-color: cadetblue;
+}
+
+.btns {
+    color: var(--btn-color);
+}
+
+.btns .operation,
+.btns .number,
+.btns .decimal  {
+    background-color: var(--btn-background);
+}
+
+.btns .eraser {
+    background-color: var(--eraser-background);
 }
