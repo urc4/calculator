@@ -21,7 +21,6 @@ function operate(operator, firstOperand, secondOperand) {
       break;
     case "/":
       if (firstOperand) return secondOperand / firstOperand;
-      // Calculator.isOperating = true;
       return "cmon cuh";
       break;
     case "exp":
@@ -37,6 +36,11 @@ function operate(operator, firstOperand, secondOperand) {
 
 const Display = {
   updateCurrentDigits: (digit) => {
+    if (Calculator.isError) {
+      currentNumber.textContent = `${digit}`;
+      Calculator.isError = false;
+      return;
+    }
     if (Calculator.isOperating) {
       currentNumber.textContent = `${digit}`;
       Calculator.isOperating = false;
@@ -52,6 +56,7 @@ const Display = {
     else currentNumber.textContent += `.`;
   },
   updateDelete: () => {
+    if (Calculator.isError) return;
     if (Calculator.isOperating) return;
     if (currentNumber.textContent.length === 1) currentNumber.textContent = `0`;
     else currentNumber.textContent = currentNumber.textContent.slice(0, -1);
@@ -250,6 +255,10 @@ function createNegateListener() {
 }
 
 function updateEqual() {
+  if (Calculator.isError) {
+    Display.updateClear();
+    return;
+  }
   Calculator.currentValue = convertToNumber(currentNumber.textContent);
   console.log("hi");
   if (Calculator.operator === null) return;
@@ -265,6 +274,14 @@ function updateEqual() {
     Calculator.storedValue
   ))}`;
   currentNumber.textContent = `${Calculator.storedValue}`;
+
+  if (Calculator.storedValue === "cmon cuh") {
+    Display.updateClear(); //make a display error message
+    currentNumber.textContent = "cmon cuh";
+    Calculator.isError = true;
+    return;
+  }
+
   Calculator.currentValue = null;
   Calculator.storedValue = null;
   Calculator.isOperating = true;
@@ -296,13 +313,13 @@ function createEqualListener() {
 }
 
 function updateOperator(btnId) {
-  Calculator.currentValue = convertToNumber(currentNumber.textContent);
-
-  if (Calculator.currentValue === NaN || Calculator.storedValue === NaN) {
+  if (Calculator.isError) {
     Display.updateClear();
     return;
   }
+  Calculator.currentValue = convertToNumber(currentNumber.textContent);
 
+  if (isNaN(Calculator.currentValue)) return;
   if (Calculator.operator === null) Calculator.operator = getOperator(btnId)[0];
 
   if (Calculator.storedValue === null) {
@@ -334,7 +351,7 @@ function updateOperator(btnId) {
   if (Calculator.storedValue === "cmon cuh") {
     Display.updateClear(); //make a display error message
     currentNumber.textContent = "cmon cuh";
-    Calculator.isOperating = false;
+    Calculator.isError = true;
     return;
   }
 
@@ -415,6 +432,7 @@ const Calculator = {
   operator: null,
   operatorText: null,
   isOperating: false,
+  isError: false,
 };
 
 Calculator.activateListeners();
