@@ -162,28 +162,27 @@ function createNumberListener() {
     btn.addEventListener("mousedown", (event) =>
       Display.updateCurrentDigits(event.target.id)
     );
-    btn.focus();
   });
-  numberBtns.forEach((btn) => {
-    btn.addEventListener("keydown", (event) => {
-      if (!Number(event.key) && Number(event.key) !== 0) return;
-      if (event.key === " ") return;
-      Display.updateCurrentDigits(event.key);
-      console.log(event.currentTarget);
-      console.log(event.key);
-      btn.classList.add("active-grey");
-    });
-    btn.focus();
+
+  document.addEventListener("keydown", (event) => {
+    if (!Number(event.key) && Number(event.key) !== 0) return;
+    if (event.key === " ") return;
+    const digitalNumberKey = document.getElementById(`${event.key}`);
+    if (digitalNumberKey) {
+      const mousedownEvent = new MouseEvent("mousedown");
+      digitalNumberKey.dispatchEvent(mousedownEvent);
+      digitalNumberKey.classList.add("active-grey");
+    }
   });
-  numberBtns.forEach((btn) => {
-    btn.addEventListener("keyup", (event) => {
-      if (!Number(event.key) && Number(event.key) !== 0) return;
-      if (event.key === " ") return;
-      console.log(event.currentTarget);
-      console.log(event.key);
-      btn.classList.remove("active-grey");
-    });
-    btn.focus();
+  document.addEventListener("keyup", (event) => {
+    if (!Number(event.key) && Number(event.key) !== 0) return;
+    if (event.key === " ") return;
+    const digitalNumberKey = document.getElementById(`${event.key}`);
+    if (digitalNumberKey) {
+      const mouseupEvent = new MouseEvent("mouseup");
+      digitalNumberKey.dispatchEvent(mouseupEvent);
+      digitalNumberKey.classList.remove("active-grey");
+    }
   });
 }
 
