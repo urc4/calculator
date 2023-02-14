@@ -56,6 +56,13 @@ const Display = {
     else currentNumber.textContent += `.`;
   },
   updateDelete: () => {
+    if (
+      currentNumber.textContent.length === 2 &&
+      currentNumber.textContent[0] === "-"
+    ) {
+      currentNumber.textContent = `0`;
+      return;
+    }
     if (Calculator.isError) return;
     if (Calculator.isOperating) return;
     if (currentNumber.textContent.length === 1) currentNumber.textContent = `0`;
@@ -223,6 +230,12 @@ function getOperator(btnId) {
 
 function updateNegate() {
   Calculator.currentValue = convertToNumber(currentNumber.textContent);
+  if (Calculator.storedValue !== null) {
+    // Calculator.isOperating = false;
+    currentNumber.textContent = `${operate("+/-", Calculator.currentValue)}`;
+    Calculator.currentValue = null;
+    return;
+  }
   Calculator.storedValue = operate("+/-", Calculator.currentValue);
   currentNumber.textContent = `${Calculator.storedValue}`;
   calcHistory.textContent = `negate(${Calculator.currentValue})`;
