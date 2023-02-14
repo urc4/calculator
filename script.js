@@ -87,17 +87,45 @@ const Display = {
 function createClearListener() {
   const clearBtn = CALC_BUTTONS.querySelector("#clear");
   clearBtn.addEventListener("mousedown", () => Display.updateClear());
-}
-
-function createDeleteListener() {
-  const deleteBtn = CALC_BUTTONS.querySelector("#delete");
-  deleteBtn.addEventListener("mousedown", () => Display.updateDelete());
   document.addEventListener("keydown", (event) => {
     if (event.key !== "c") return;
     const digitalClearKey = document.querySelector("#clear");
     if (digitalClearKey) {
       const mousedownEvent = new MouseEvent("mousedown");
       digitalClearKey.dispatchEvent(mousedownEvent);
+      digitalClearKey.classList.add("active-orange");
+    }
+  });
+  document.addEventListener("keyup", (event) => {
+    if (event.key !== "c") return;
+    const digitalClearKey = document.querySelector("#clear");
+    if (digitalClearKey) {
+      const mouseupEvent = new MouseEvent("mouseup");
+      digitalClearKey.dispatchEvent(mouseupEvent);
+      digitalClearKey.classList.remove("active-orange");
+    }
+  });
+}
+
+function createDeleteListener() {
+  const deleteBtn = CALC_BUTTONS.querySelector("#delete");
+  deleteBtn.addEventListener("mousedown", () => Display.updateDelete());
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "d") return;
+    const digitalDeleteButton = document.querySelector("#delete");
+    if (digitalDeleteButton) {
+      const mousedownEvent = new MouseEvent("mousedown");
+      digitalDeleteButton.dispatchEvent(mousedownEvent);
+      digitalDeleteButton.classList.add("active-orange");
+    }
+  });
+  document.addEventListener("keyup", (event) => {
+    if (event.key !== "d") return;
+    const digitalDeleteButton = document.querySelector("#delete");
+    if (digitalDeleteButton) {
+      const mouseupEvent = new MouseEvent("mouseup");
+      digitalDeleteButton.dispatchEvent(mouseupEvent);
+      digitalDeleteButton.classList.remove("active-orange");
     }
   });
 }
