@@ -92,6 +92,14 @@ function createClearListener() {
 function createDeleteListener() {
   const deleteBtn = CALC_BUTTONS.querySelector("#delete");
   deleteBtn.addEventListener("mousedown", () => Display.updateDelete());
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "c") return;
+    const digitalClearKey = document.querySelector("#clear");
+    if (digitalClearKey) {
+      const mousedownEvent = new MouseEvent("mousedown");
+      digitalClearKey.dispatchEvent(mousedownEvent);
+    }
+  });
 }
 
 function createDecimalListener() {
