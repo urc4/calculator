@@ -153,9 +153,6 @@ function createDecimalListener() {
   });
 }
 
-// add event listerns for keys use algo + button.id
-// can i not use this.numberBtns here?
-
 function createNumberListener() {
   const numberBtns = CALC_BUTTONS.querySelectorAll(".number");
   numberBtns.forEach((btn) => {
@@ -217,7 +214,6 @@ function getOperator(btnId) {
   }
 }
 
-//on the first run its multiplying by 2 for some reason
 function updateNegate() {
   Calculator.currentValue = convertToNumber(currentNumber.textContent);
   Calculator.storedValue = operate("+/-", Calculator.currentValue);
@@ -225,29 +221,39 @@ function updateNegate() {
   calcHistory.textContent = `negate(${Calculator.currentValue})`;
   Calculator.currentValue = null;
   Calculator.isOperating = true;
-  // Calculator.operator = getOperator(btnId)[0];
   return;
 }
 
 function createNegateListener() {
   const negateBtn = CALC_BUTTONS.querySelector("#negate");
-  negateBtn.addEventListener("mousedown", () => {
-    updateNegate();
+  negateBtn.addEventListener("mousedown", () => updateNegate());
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "n") return;
+    const digitalNegateKey = document.querySelector("#negate");
+    if (digitalNegateKey) {
+      const mousedownEvent = new MouseEvent("mousedown");
+      digitalNegateKey.dispatchEvent(mousedownEvent);
+      digitalNegateKey.classList.add("active-grey");
+    }
   });
-  negateBtn.addEventListener;
+  document.addEventListener("keyup", (event) => {
+    if (event.key !== "n") return;
+    const digitalNegateKey = document.querySelector("#negate");
+    if (digitalNegateKey) {
+      const mouseupEvent = new MouseEvent("mouseup");
+      digitalNegateKey.dispatchEvent(mouseupEvent);
+      digitalNegateKey.classList.remove("active-grey");
+    }
+  });
 }
 
-// it also doubles the value when pressed another operation afterwards
-// this may have to do with the fact that it operates twice
-function updateOperate() {
+function updateEqual() {
   Calculator.currentValue = convertToNumber(currentNumber.textContent);
   console.log("hi");
   if (Calculator.operator === null) return;
   if (Calculator.isOperating && Calculator.currentValue === null) return;
   if (Calculator.storedValue === null) return;
 
-  // Calculator.storedValue = operate("=", Calculator.currentValue, Calculator.storedValue);
-  // Calculator.isOperating = true;
   calcHistory.textContent = `${Calculator.storedValue} ${
     Calculator.operatorText
   } ${Calculator.currentValue} = 
@@ -259,16 +265,31 @@ function updateOperate() {
   currentNumber.textContent = `${Calculator.storedValue}`;
   Calculator.currentValue = null;
   Calculator.storedValue = null;
-  // Calculator.operator = getOperator(btnId)[0];
   Calculator.isOperating = true;
   Calculator.operator = null;
   return;
 }
 
-function createOperateListener() {
-  const operateBtn = CALC_BUTTONS.querySelector("#operate");
-  operateBtn.addEventListener("mousedown", () => {
-    updateOperate();
+function createEqualListener() {
+  const equalBtn = CALC_BUTTONS.querySelector("#equal");
+  equalBtn.addEventListener("mousedown", () => updateEqual());
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "=" && event.key === "Enter") return;
+    const digitalEqualKey = document.querySelector("#equal");
+    if (digitalEqualKey) {
+      const mousedownEvent = new MouseEvent("mousedown");
+      digitalEqualKey.dispatchEvent(mousedownEvent);
+      digitalEqualKey.classList.add("active-grey");
+    }
+  });
+  document.addEventListener("keyup", (event) => {
+    if (event.key !== "=" && event.key === "Enter") return;
+    const digitalEqualKey = document.querySelector("#equal");
+    if (digitalEqualKey) {
+      const mouseupEvent = new MouseEvent("mouseup");
+      digitalEqualKey.dispatchEvent(mouseupEvent);
+      digitalEqualKey.classList.remove("active-grey");
+    }
   });
 }
 
@@ -327,7 +348,7 @@ const Calculator = {
     createClearListener();
     createOperatorListener();
     createNegateListener();
-    createOperateListener();
+    createEqualListener();
   },
   currentValue: null,
   storedValue: null,
