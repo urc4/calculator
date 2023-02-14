@@ -20,7 +20,9 @@ function operate(operator, firstOperand, secondOperand) {
       return secondOperand * firstOperand;
       break;
     case "/":
-      return secondOperand / firstOperand;
+      if (firstOperand) return secondOperand / firstOperand;
+      // Calculator.isOperating = true;
+      return "cmon cuh";
       break;
     case "exp":
       return secondOperand ** firstOperand;
@@ -283,7 +285,7 @@ function createEqualListener() {
     }
   });
   document.addEventListener("keyup", (event) => {
-    if (event.key !== "=" && event.key === "Enter") return;
+    if (event.key !== "=" && event.key !== "Enter") return;
     const digitalEqualKey = document.querySelector("#equal");
     if (digitalEqualKey) {
       const mouseupEvent = new MouseEvent("mouseup");
@@ -295,6 +297,11 @@ function createEqualListener() {
 
 function updateOperator(btnId) {
   Calculator.currentValue = convertToNumber(currentNumber.textContent);
+
+  if (Calculator.currentValue === NaN || Calculator.storedValue === NaN) {
+    Display.updateClear();
+    return;
+  }
 
   if (Calculator.operator === null) Calculator.operator = getOperator(btnId)[0];
 
@@ -323,6 +330,14 @@ function updateOperator(btnId) {
     Calculator.currentValue,
     Calculator.storedValue
   );
+
+  if (Calculator.storedValue === "cmon cuh") {
+    Display.updateClear(); //make a display error message
+    currentNumber.textContent = "cmon cuh";
+    Calculator.isOperating = false;
+    return;
+  }
+
   Calculator.currentValue = null;
   currentNumber.textContent = `${Calculator.storedValue}`;
   Calculator.isOperating = true;
@@ -334,10 +349,55 @@ function updateOperator(btnId) {
 function createOperatorListener() {
   const operatorBtn = CALC_BUTTONS.querySelectorAll(".operation");
   operatorBtn.forEach((btn) => {
-    btn.addEventListener("mousedown", (event) => {
-      updateOperator(event.target.id);
-    });
+    btn.addEventListener("mousedown", (event) =>
+      updateOperator(event.target.id)
+    );
   });
+
+  document.addEventListener("keydown", (event) => {
+    const digitalOperatorId = getOperatorId(event.key);
+    const digitalOperatorKey = document.getElementById(digitalOperatorId);
+    if (digitalOperatorKey) {
+      const mousedownEvent = new MouseEvent("mousedown");
+      digitalOperatorKey.dispatchEvent(mousedownEvent);
+      digitalOperatorKey.classList.add("active-grey");
+    }
+  });
+  document.addEventListener("keyup", (event) => {
+    const digitalOperatorId = getOperatorId(event.key);
+    const digitalOperatorKey = document.getElementById(digitalOperatorId);
+    if (digitalOperatorKey) {
+      const mouseupEvent = new MouseEvent("mouseup");
+      digitalOperatorKey.dispatchEvent(mouseupEvent);
+      digitalOperatorKey.classList.remove("active-grey");
+    }
+  });
+}
+
+function getOperatorId(operatorKey) {
+  switch (operatorKey) {
+    case "+":
+      return "add";
+      break;
+    case "-":
+      return "subtract";
+      break;
+    case "*":
+      return "multiply";
+      break;
+    case "x":
+      return "multiply";
+      break;
+    case "/":
+      return "divide";
+      break;
+    case "e":
+      return "exponentiate";
+      break;
+    default:
+      return false;
+      break;
+  }
 }
 
 const Calculator = {
