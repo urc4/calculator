@@ -1,6 +1,8 @@
 const CALCULATOR = document.querySelector(".calculator");
 const CALC_DISPLAY = CALCULATOR.querySelector(".display");
 const CALC_BUTTONS = CALCULATOR.querySelector(".btns");
+const currentNumber = CALC_DISPLAY.querySelector(".current");
+const calcHistory = CALC_DISPLAY.querySelector(".history");
 
 const FOOTER = document.querySelector("footer");
 const yearDisplay = FOOTER.querySelector("#year");
@@ -33,7 +35,6 @@ function operate(operator, firstOperand, secondOperand) {
 
 const Display = {
   updateCurrentDigits: (digit) => {
-    const currentNumber = CALC_DISPLAY.querySelector(".current");
     if (Calculator.isOperating) {
       currentNumber.textContent = `${digit}`;
       Calculator.isOperating = false;
@@ -44,20 +45,16 @@ const Display = {
     else currentNumber.textContent += `${digit}`;
   },
   updateDecimal: () => {
-    const currentNumber = CALC_DISPLAY.querySelector(".current");
     if (currentNumber.textContent.includes(".")) return;
     if (!currentNumber.textContent) currentNumber.textContent = `0.`;
     else currentNumber.textContent += `.`;
   },
   updateDelete: () => {
     if (Calculator.isOperating) return;
-    const currentNumber = CALC_DISPLAY.querySelector(".current");
     if (currentNumber.textContent.length === 1) currentNumber.textContent = `0`;
     else currentNumber.textContent = currentNumber.textContent.slice(0, -1);
   },
   updateClear: () => {
-    const currentNumber = CALC_DISPLAY.querySelector(".current");
-    const calcHistory = CALC_DISPLAY.querySelector(".history");
     calcHistory.textContent = ``;
     currentNumber.textContent = `0`;
     Calculator.currentValue = null;
@@ -75,7 +72,6 @@ const Display = {
   },
   roundNumber: () => {
     if (Display.isUnderMaxLength()) return;
-    const currentNumber = CALC_DISPLAY.querySelector(".current");
     const currentValue = convertToNumber(currentNumber.textContent);
     if (!currentNumber.textContent.includes(".")) {
       const exponent = currentNumber.textContent.length - 1;
@@ -112,9 +108,32 @@ function createNumberListener() {
     btn.addEventListener("mousedown", (event) =>
       Display.updateCurrentDigits(event.target.id)
     );
+    btn.focus();
+  });
+  numberBtns.forEach((btn) => {
+    btn.addEventListener("keydown", (event) => {
+      if (!Number(event.key) && Number(event.key) !== 0) return;
+      if (event.key === " ") return;
+      Display.updateCurrentDigits(event.key);
+      console.log(event.currentTarget);
+      console.log(event.key);
+      btn.classList.add("active-grey");
+    });
+    btn.focus();
+  });
+  numberBtns.forEach((btn) => {
+    btn.addEventListener("keyup", (event) => {
+      if (!Number(event.key) && Number(event.key) !== 0) return;
+      if (event.key === " ") return;
+      console.log(event.currentTarget);
+      console.log(event.key);
+      btn.classList.remove("active-grey");
+    });
+    btn.focus();
   });
 }
 
+// include rounded answer
 function convertToNumber(currentString) {
   if (!currentString) return null;
   if (!currentString.includes(".")) return Number(currentString);
@@ -147,8 +166,6 @@ function getOperator(btnId) {
 
 //on the first run its multiplying by 2 for some reason
 function updateNegate() {
-  const calcHistory = CALC_DISPLAY.querySelector(".history");
-  const currentNumber = CALC_DISPLAY.querySelector(".current");
   Calculator.currentValue = convertToNumber(currentNumber.textContent);
   Calculator.storedValue = operate("+/-", Calculator.currentValue);
   currentNumber.textContent = `${Calculator.storedValue}`;
@@ -164,13 +181,12 @@ function createNegateListener() {
   negateBtn.addEventListener("mousedown", () => {
     updateNegate();
   });
+  negateBtn.addEventListener;
 }
 
 // it also doubles the value when pressed another operation afterwards
 // this may have to do with the fact that it operates twice
 function updateOperate() {
-  const calcHistory = CALC_DISPLAY.querySelector(".history");
-  const currentNumber = CALC_DISPLAY.querySelector(".current");
   Calculator.currentValue = convertToNumber(currentNumber.textContent);
   console.log("hi");
   if (Calculator.operator === null) return;
@@ -179,9 +195,9 @@ function updateOperate() {
 
   // Calculator.storedValue = operate("=", Calculator.currentValue, Calculator.storedValue);
   // Calculator.isOperating = true;
-  calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operator} ${
-    Calculator.currentValue
-  } = 
+  calcHistory.textContent = `${Calculator.storedValue} ${
+    Calculator.operatorText
+  } ${Calculator.currentValue} = 
   ${(Calculator.storedValue = operate(
     Calculator.operator,
     Calculator.currentValue,
@@ -189,6 +205,7 @@ function updateOperate() {
   ))}`;
   currentNumber.textContent = `${Calculator.storedValue}`;
   Calculator.currentValue = null;
+  Calculator.storedValue = null;
   // Calculator.operator = getOperator(btnId)[0];
   Calculator.isOperating = true;
   Calculator.operator = null;
@@ -203,8 +220,6 @@ function createOperateListener() {
 }
 
 function updateOperator(btnId) {
-  const calcHistory = CALC_DISPLAY.querySelector(".history");
-  const currentNumber = CALC_DISPLAY.querySelector(".current");
   Calculator.currentValue = convertToNumber(currentNumber.textContent);
 
   if (Calculator.operator === null) Calculator.operator = getOperator(btnId)[0];
@@ -212,9 +227,9 @@ function updateOperator(btnId) {
   if (Calculator.storedValue === null) {
     Calculator.storedValue = Calculator.currentValue;
     Calculator.operator = getOperator(btnId)[0];
-    const operatorText = getOperator(btnId)[1];
+    Calculator.operatorText = getOperator(btnId)[1];
     Calculator.currentValue = null;
-    calcHistory.textContent = `${Calculator.storedValue} ${operatorText}`;
+    calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operatorText}`;
     currentNumber.textContent = `${Calculator.storedValue}`;
     Calculator.isOperating = true;
     return;
@@ -224,8 +239,8 @@ function updateOperator(btnId) {
 
   if (Calculator.isOperating) {
     Calculator.operator = getOperator(btnId)[0];
-    const operatorText = getOperator(btnId)[1];
-    calcHistory.textContent = `${Calculator.storedValue} ${operatorText}`;
+    Calculator.operatorText = getOperator(btnId)[1];
+    calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operatorText}`;
     return;
   }
 
@@ -238,8 +253,8 @@ function updateOperator(btnId) {
   currentNumber.textContent = `${Calculator.storedValue}`;
   Calculator.isOperating = true;
   Calculator.operator = getOperator(btnId)[0];
-  const operatorText = getOperator(btnId)[1];
-  calcHistory.textContent = `${Calculator.storedValue} ${operatorText}`;
+  Calculator.operatorText = getOperator(btnId)[1];
+  calcHistory.textContent = `${Calculator.storedValue} ${Calculator.operatorText}`;
 }
 
 function createOperatorListener() {
@@ -264,6 +279,7 @@ const Calculator = {
   currentValue: null,
   storedValue: null,
   operator: null,
+  operatorText: null,
   isOperating: false,
 };
 

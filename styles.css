@@ -163,6 +163,17 @@ button {
 
 .btns .eraser:active {
   background-color: #af7356;
+  box-shadow: 0px 1px 3px #888888;
+}
+
+.active-grey {
+  background-color: #a0c9d6;
+  box-shadow: 0px 1px 3px #888888;
+}
+
+.active-orange {
+  background-color: #af7356;
+  box-shadow: 0px 1px 3px #888888;
 }
 
 a {
