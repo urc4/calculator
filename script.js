@@ -133,6 +133,24 @@ function createDeleteListener() {
 function createDecimalListener() {
   const decimalBtn = CALC_BUTTONS.querySelector(".decimal");
   decimalBtn.addEventListener("mousedown", () => Display.updateDecimal());
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== ".") return;
+    const digitalDecimalKey = document.querySelector("#decimal");
+    if (digitalDecimalKey) {
+      const mousedownEvent = new MouseEvent("mousedown");
+      digitalDecimalKey.dispatchEvent(mousedownEvent);
+      digitalDecimalKey.classList.add("active-grey");
+    }
+  });
+  document.addEventListener("keyup", (event) => {
+    if (event.key !== ".") return;
+    const digitalDecimalKey = document.querySelector("#decimal");
+    if (digitalDecimalKey) {
+      const mouseupEvent = new MouseEvent("mouseup");
+      digitalDecimalKey.dispatchEvent(mouseupEvent);
+      digitalDecimalKey.classList.remove("active-grey");
+    }
+  });
 }
 
 // add event listerns for keys use algo + button.id
