@@ -115,7 +115,7 @@ function createClearListener() {
     const digitalClearKey = document.querySelector("#clear");
     if (digitalClearKey) {
       const mouseupEvent = new MouseEvent("mouseup");
-      digitalClearKey.dispatchEvent(mouseupEvent);
+      // digitalClearKey.dispatchEvent(mouseupEvent);
       digitalClearKey.classList.remove("active-orange");
     }
   });
@@ -138,7 +138,7 @@ function createDeleteListener() {
     const digitalDeleteButton = document.querySelector("#delete");
     if (digitalDeleteButton) {
       const mouseupEvent = new MouseEvent("mouseup");
-      digitalDeleteButton.dispatchEvent(mouseupEvent);
+      // digitalDeleteButton.dispatchEvent(mouseupEvent);
       digitalDeleteButton.classList.remove("active-orange");
     }
   });
@@ -161,7 +161,7 @@ function createDecimalListener() {
     const digitalDecimalKey = document.querySelector("#decimal");
     if (digitalDecimalKey) {
       const mouseupEvent = new MouseEvent("mouseup");
-      digitalDecimalKey.dispatchEvent(mouseupEvent);
+      // digitalDecimalKey.dispatchEvent(mouseupEvent);
       digitalDecimalKey.classList.remove("active-grey");
     }
   });
@@ -191,7 +191,7 @@ function createNumberListener() {
     const digitalNumberKey = document.getElementById(`${event.key}`);
     if (digitalNumberKey) {
       const mouseupEvent = new MouseEvent("mouseup");
-      digitalNumberKey.dispatchEvent(mouseupEvent);
+      // digitalNumberKey.dispatchEvent(mouseupEvent);
       digitalNumberKey.classList.remove("active-grey");
     }
   });
@@ -261,7 +261,7 @@ function createNegateListener() {
     const digitalNegateKey = document.querySelector("#negate");
     if (digitalNegateKey) {
       const mouseupEvent = new MouseEvent("mouseup");
-      digitalNegateKey.dispatchEvent(mouseupEvent);
+      // digitalNegateKey.dispatchEvent(mouseupEvent);
       digitalNegateKey.classList.remove("active-grey");
     }
   });
@@ -306,7 +306,7 @@ function createEqualListener() {
   const equalBtn = CALC_BUTTONS.querySelector("#equal");
   equalBtn.addEventListener("mousedown", () => updateEqual());
   document.addEventListener("keydown", (event) => {
-    if (event.key !== "=" && event.key === "Enter") return;
+    if (event.key !== "=" && event.key !== "Enter") return;
     const digitalEqualKey = document.querySelector("#equal");
     if (digitalEqualKey) {
       const mousedownEvent = new MouseEvent("mousedown");
@@ -319,7 +319,7 @@ function createEqualListener() {
     const digitalEqualKey = document.querySelector("#equal");
     if (digitalEqualKey) {
       const mouseupEvent = new MouseEvent("mouseup");
-      digitalEqualKey.dispatchEvent(mouseupEvent);
+      // digitalEqualKey.dispatchEvent(mouseupEvent);
       digitalEqualKey.classList.remove("active-grey");
     }
   });
@@ -398,7 +398,7 @@ function createOperatorListener() {
     const digitalOperatorKey = document.getElementById(digitalOperatorId);
     if (digitalOperatorKey) {
       const mouseupEvent = new MouseEvent("mouseup");
-      digitalOperatorKey.dispatchEvent(mouseupEvent);
+      // digitalOperatorKey.dispatchEvent(mouseupEvent);
       digitalOperatorKey.classList.remove("active-grey");
     }
   });
