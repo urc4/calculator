@@ -52,6 +52,11 @@ const Display = {
   },
   updateDecimal: () => {
     if (currentNumber.textContent.includes(".")) return;
+    if (Calculator.isOperating) {
+      Calculator.isOperating = false;
+      currentNumber.textContent = `0.`;
+      return;
+    }
     if (!currentNumber.textContent) currentNumber.textContent = `0.`;
     else currentNumber.textContent += `.`;
   },
@@ -84,17 +89,10 @@ const Display = {
     if (currentNumberText.includes(".")) return true;
     return false;
   },
-  roundNumber: () => {
-    if (Display.isUnderMaxLength()) return;
-    const currentValue = convertToNumber(currentNumber.textContent);
-    if (!currentNumber.textContent.includes(".")) {
-      const exponent = currentNumber.textContent.length - 1;
-      currentNumber.textContent =
-        `${Math.round(currentValue / 10 ** 4)}`.slice(0, 8) + `e+${exponent}`;
-    }
-    currentNumber.textContent = `${Math.round(
-      convertToNumber(currentNumber.textContent)
-    )}`;
+  roundNumber: (number) => {
+    if (Display.isUnderMaxLength()) return number;
+    const precision = 8;
+    return number.toExponential(precision);
   },
 };
 
@@ -200,12 +198,15 @@ function createNumberListener() {
 // include rounded answer
 function convertToNumber(currentString) {
   if (!currentString) return null;
-  if (!currentString.includes(".")) return Number(currentString);
+  if (!currentString.includes("."))
+    return Display.roundNumber(Number(currentString));
   const splitDecimal = currentString.split(".");
   const integerPart = splitDecimal[0];
   const decimalPart = splitDecimal[1];
-  if (!decimalPart.length) return Number(integerPart);
-  return Number(integerPart + decimalPart) / 10 ** decimalPart.length;
+  if (!decimalPart.length) return Display.roundNumber(Number(integerPart));
+  return Display.roundNumber(
+    Number(integerPart + decimalPart) / 10 ** decimalPart.length
+  );
 }
 
 function getOperator(btnId) {
